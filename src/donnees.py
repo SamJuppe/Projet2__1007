@@ -1,12 +1,15 @@
 import pandas as pd
 
+''' '''
 colonnes = [
     "Stock Index",
     "Open Price",
     "Inflation Rate (%)",
     "Interest Rate (%)",
     "GDP Growth (%)",
-    "Close Price"
+    "Close Price",
+    "Crude Oil Price (USD per Barrel)",
+    "Gold Price (USD per Ounce)"
 ]
 
 donnees = pd.read_csv("donnees/finance_lol.csv", usecols=colonnes)
