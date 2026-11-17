@@ -1,3 +1,2 @@
 # Projet2__1007
-bonjour la cite 
-allo 
+la liscence de notre dataset: Database Contents License (DbCL) v1.0
