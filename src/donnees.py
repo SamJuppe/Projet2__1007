@@ -13,7 +13,7 @@ colonnes = [
 donnee = pd.read_csv("donnees/winequalityred.csv", usecols=colonnes)
 donnee.to_csv("donnees/donnees_selectionnees.csv", index=False)
 def charger_donnees(chemin) :
-    return pd.read_csv(chemin, usecols=colonnes, parse_dates=["Date"]) 
+    return pd.read_csv(chemin, usecols=colonnes) 
 
 def est_ce_que_il_ny_a__pas_de_strings_vide_True_or_False(fichier) -> bool:
     liste = []
