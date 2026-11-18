@@ -12,7 +12,6 @@ def separer_donnees(X, y, taille_test=0.2, graine=42):
 if __name__ == "__main__":
     X = donnee.drop(columns=["quality"])   
     y = donnee["quality"]              
-
     X_train, X_test, y_train, y_test = separer_donnees(X, y)
 
     modele = LinearRegression()
