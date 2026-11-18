@@ -1,8 +1,9 @@
-import pandas as pd
+
 import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
-
+import json as js 
+import joblib as jo 
 from donnees import donnee
 
 
@@ -26,7 +27,6 @@ if __name__ == "__main__":
     print(y_predit[:5])                   
     print(y_test[:5].values)               
 
-    #CALCUL RMSE
-    y_predit = modele.predict(X_test)
+    #CALCUL RMSEc
     print("RMSE modèle :", rmse(y_test, y_predit))
-    print("RMSE référence :", rmse(y_test, y_train.mean()))
+    print("RMSE référence :", rmse(y_test, y_train.mean())) 
