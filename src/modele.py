@@ -6,8 +6,8 @@ import json as js
 import joblib as jo 
 import pandas as pd
 import os
-from exceptions import TaillesDifferentesError
-from donnees import charger_donnees,DOSSIER_DONNEES,DOSSIER_PROJET
+from exceptions import *
+from donnees import categoriser_sucre,DOSSIER_DONNEES,DOSSIER_PROJET,charger_donnees
 
 def separer_donnees(X : pd.DataFrame, y: pd.Series, taille_test: float=0.2, graine: int=42 ) -> tuple:
     """Sépare X et y en ensembles d'entraînement et de test.
@@ -47,10 +47,16 @@ def construire_metadonnees(X: pd.DataFrame, erreur: float) -> dict:
     maximums = X.max()
     colonnes = {}
     for colonne in X.columns:
-        colonnes[colonne] = {
+        if pd.api.types.is_numeric_dtype(X[colonne]): #a comprendre
+            colonnes[colonne] = {
+            "type": "numerique",
             "min": float(minimums[colonne]),
             "max": float(maximums[colonne]),
         }
+        else :
+            colonnes[colonne] = {
+            "type": "categorielle",
+            "choix": list(X[colonne].unique())}
     return {"rmse": erreur, "colonnes": colonnes}
 
 
@@ -65,10 +71,38 @@ def enregistrer_metadonnees(metadonnees: dict, chemin: str) -> None:
     with open(chemin, "w", encoding="utf-8") as fichier:
         js.dump(metadonnees, fichier, indent=4, ensure_ascii=False)
 
+def charger_modele(chemin : str) -> LinearRegression: #a relire et comprendre 
+    """Relit le modèle entraîné sauvegardé avec joblib.
+
+    Reçoit : chemin (str), le chemin du fichier .joblib.
+    Renvoie : le modèle entraîné (LinearRegression), prêt à faire des prédictions.
+    Échoue : FichierIntrouvableError si le fichier n'existe pas
+             (par exemple si modele.py n'a jamais été lancé).
+    """
+    if not os.path.exists(chemin):
+        raise FichierIntrouvableError(f"Le modèle {chemin} est introuvable. Lancez d'abord modele.py.")
+    return jo.load(chemin)
+
+
+
+def predire(modele: LinearRegression, saisies: dict) -> float:#a relire et comprendre
+    """Prédit la qualité d'un vin à partir des valeurs validées de l'utilisateur.
+
+    Reçoit : modele (LinearRegression), le modèle entraîné ;
+             saisies (dict), les valeurs déjà validées, ex. {"alcohol": 12.5, ..., "sucre": "sec"}.
+    Renvoie : la note de qualité prédite (float).
+    Échoue : ValueError si une colonne attendue par le modèle est manquante.
+    """
+    ligne = pd.DataFrame([saisies])
+    ligne = pd.get_dummies(ligne)
+    ligne = ligne.reindex(columns=modele.feature_names_in_, fill_value=0)
+    return float(modele.predict(ligne)[0])
 
 if __name__ == "__main__":
     donne = charger_donnees(os.path.join(DOSSIER_DONNEES, "winequalityred.csv"))
-    X = donne.drop(columns=["quality"])   
+    donne = categoriser_sucre(donne)
+    X_avant = donne.drop(columns=["quality"])
+    X = pd.get_dummies(X_avant, columns=["sucre"], drop_first=True)
     y = donne["quality"]              
     X_train, X_test, y_train, y_test = separer_donnees(X, y)
 
@@ -82,6 +116,6 @@ if __name__ == "__main__":
 
     enregistrer_jo(modele,os.path.join(DOSSIER_PROJET, "modeles","modele.joblib"))
 
-    metadonnees = construire_metadonnees(X, rmse(y_test, y_predit))
+    metadonnees = construire_metadonnees(X_avant, rmse(y_test, y_predit))
     enregistrer_metadonnees(metadonnees, os.path.join(DOSSIER_PROJET, "modeles", "metadonnees.json"))
 

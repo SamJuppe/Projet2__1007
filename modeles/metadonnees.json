@@ -1,29 +1,42 @@
 {
-    "rmse": 0.6318837094557447,
+    "rmse": 0.6334633394789655,
     "colonnes": {
         "volatile acidity": {
+            "type": "numerique",
             "min": 0.12,
             "max": 1.58
         },
         "citric acid": {
+            "type": "numerique",
             "min": 0.0,
             "max": 1.0
         },
         "total sulfur dioxide": {
+            "type": "numerique",
             "min": 6.0,
             "max": 289.0
         },
         "density": {
+            "type": "numerique",
             "min": 0.9900700000000001,
             "max": 1.00369
         },
         "sulphates": {
+            "type": "numerique",
             "min": 0.33,
             "max": 2.0
         },
         "alcohol": {
+            "type": "numerique",
             "min": 8.4,
             "max": 14.9
+        },
+        "sucre": {
+            "type": "categorielle",
+            "choix": [
+                "sec",
+                "sucré"
+            ]
         }
     }
 }
