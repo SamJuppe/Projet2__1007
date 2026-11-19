@@ -98,6 +98,21 @@ def predire(modele: LinearRegression, saisies: dict) -> float:#a relire et compr
     ligne = ligne.reindex(columns=modele.feature_names_in_, fill_value=0)
     return float(modele.predict(ligne)[0])
 
+def interpreter_note(note: float) -> str:
+    """Traduit la note prédite en une appréciation compréhensible par tout le monde.
+
+    Reçoit : note (float), la note de qualité prédite (échelle de 0 à 10).
+    Renvoie : une phrase courte (str) qui décrit le vin.
+    Échoue : jamais (toute note donne une phrase).
+    """
+    if note < 5:
+        return "Vin de qualité faible"
+    if note < 5.5:
+        return "Vin de qualité moyenne"
+    if note < 6.5:
+        return "Bon vin"
+    return "Très bon vin"
+
 if __name__ == "__main__":
     donne = charger_donnees(os.path.join(DOSSIER_DONNEES, "winequalityred.csv"))
     donne = categoriser_sucre(donne)

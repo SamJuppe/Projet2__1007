@@ -104,15 +104,15 @@ class VariableCategorielle(Variable):
             raise StringVide("Votre saisie est vide veuillez saisir quelque chose") 
         if saisie.lower().strip() not in self._choix : 
             raise pas_dedans(f"Votre saisie : {saisie} n'est pas dans la liste : {self._choix}")
-        return saisie.lower().strip()  # ############ corrigé : ce return était dans le if, donc une saisie valide renvoyait None
-    def get_choix(self) -> list[str]:  # ############ déplacé ici depuis la classe parente Variable
+        return saisie.lower().strip()  
+    def get_choix(self) -> list[str]:  
         """Renvoie la liste des choix possibles de la variable catégorielle.
 
         Reçoit : rien.
         Renvoie : la liste des choix (list[str]), ex. ["sec", "sucré"].
         Échoue : jamais, self._choix est toujours défini dans le constructeur.
         """
-        return self._choix  # ############
+        return self._choix 
     def __str__(self) -> str:
         """Renvoie une description lisible de la variable, utilisée par print()."""
         return f"{self._nom} : un de {', '.join(self._choix)}"           
@@ -134,7 +134,7 @@ def creer_variables(metadonnees: dict) -> list[Variable]: #a relire et comprendr
     return variables
 
 if __name__ == "__main__":
-    donne = charger_donnees(os.path.join(DOSSIER_DONNEES, "winequalityred.csv"))  # ############ corrigé : mauvais nom de fichier (avant "wine4t3qualityred.csv" puis "winequalityred.csv.csv")
+    donne = charger_donnees(os.path.join(DOSSIER_DONNEES, "winequalityred.csv"))  
     print(type(donne))
     print(aucun_string_vide(donne))
     print(donne.dtypes)
