@@ -6,7 +6,7 @@ import json as js
 import joblib as jo 
 import pandas as pd
 import os
-from exceptions import *
+from exceptions import FichierIntrouvableError,TaillesDifferentesError
 from donnees import categoriser_sucre,DOSSIER_DONNEES,DOSSIER_PROJET,charger_donnees
 
 def separer_donnees(X : pd.DataFrame, y: pd.Series, taille_test: float=0.2, graine: int=42 ) -> tuple:

@@ -38,39 +38,20 @@ def categoriser_sucre(donnees: pd.DataFrame) -> pd.DataFrame:
     donnees = donnees.drop(columns=["residual sugar"])
     return donnees
 def charger_metadonnees(chemin: str) -> dict:#a relire et comprendre 
-    """Relit le fichier JSON de métadonnées du modèle.
-
-    Reçoit : chemin (str), le chemin du fichier metadonnees.json.
-    Renvoie : le dictionnaire des métadonnées (la RMSE et la description de chaque colonne).
-    Échoue : FichierIntrouvableError si le fichier n'existe pas
-             (par exemple si modele.py n'a jamais été lancé).
+    """cela va charger le fichier metadonne (.json)
+    il va donc recevoir un string qui est le chemin vers le fichier
+    et il va retourner un dictionnaire qui est dans le fichier json 
+    la possible erreur est que le fichier n'existe 
     """
     if not os.path.exists(chemin):
         raise FichierIntrouvableError(f"Les métadonnées {chemin} sont introuvables. Lancez d'abord modele.py.")
     with open(chemin, encoding="utf-8") as fichier:
         return json.load(fichier)
-def creer_variables(metadonnees: dict) -> list[Variable]: #a relire et comprendre 
-    """Crée la liste des variables d'entrée à partir des méta données du modèle.
 
-    Reçoit : metadonnees (dict), le dictionnaire lu dans metadonnees.json.
-    Renvoie : une liste de VariableNumerique et de VariableCategorielle,
-              une par colonne d'entrée, dans le même ordre que le JSON.
-    Échoue : KeyError si le dictionnaire n'a pas la clé "colonnes",
-             ou si une colonne n'a pas les clés attendues ("type", "min", "max" ou "choix").
-    """
-    variables = []
-    for nom, infos in metadonnees["colonnes"].items():
-        if infos["type"] == "numerique":
-            variables.append(VariableNumerique(nom, infos["max"], infos["min"]))
-        else:
-            variables.append(VariableCategorielle(nom, infos["choix"]))
-    return variables
 class Variable(ABC):
     def __init__(self,nom : str) -> None :
         self._nom = nom
-    def get_choix(self) -> list[str]:
-        """Renvoie la liste des choix possibles de la variable."""
-        return self._choix
+    # ############ get_choix a été retiré d'ici et déplacé dans VariableCategorielle (seule classe qui a self._choix)
 
     @abstractmethod
     def valider(self, saisie :str ) -> str|float:
@@ -123,14 +104,37 @@ class VariableCategorielle(Variable):
             raise StringVide("Votre saisie est vide veuillez saisir quelque chose") 
         if saisie.lower().strip() not in self._choix : 
             raise pas_dedans(f"Votre saisie : {saisie} n'est pas dans la liste : {self._choix}")
-            return saisie.lower().strip()
+        return saisie.lower().strip()  # ############ corrigé : ce return était dans le if, donc une saisie valide renvoyait None
+    def get_choix(self) -> list[str]:  # ############ déplacé ici depuis la classe parente Variable
+        """Renvoie la liste des choix possibles de la variable catégorielle.
+
+        Reçoit : rien.
+        Renvoie : la liste des choix (list[str]), ex. ["sec", "sucré"].
+        Échoue : jamais, self._choix est toujours défini dans le constructeur.
+        """
+        return self._choix  # ############
     def __str__(self) -> str:
         """Renvoie une description lisible de la variable, utilisée par print()."""
         return f"{self._nom} : un de {', '.join(self._choix)}"           
+def creer_variables(metadonnees: dict) -> list[Variable]: #a relire et comprendre 
+    """Crée la liste des variables d'entrée à partir des méta données du modèle.
 
+    Reçoit : metadonnees (dict), le dictionnaire lu dans metadonnees.json.
+    Renvoie : une liste de VariableNumerique et de VariableCategorielle,
+              une par colonne d'entrée, dans le même ordre que le JSON.
+    Échoue : KeyError si le dictionnaire n'a pas la clé "colonnes",
+             ou si une colonne n'a pas les clés attendues ("type", "min", "max" ou "choix").
+    """
+    variables = []
+    for nom, infos in metadonnees["colonnes"].items():
+        if infos["type"] == "numerique":
+            variables.append(VariableNumerique(nom, infos["max"], infos["min"]))
+        else:
+            variables.append(VariableCategorielle(nom, infos["choix"]))
+    return variables
 
 if __name__ == "__main__":
-    donne = charger_donnees(os.path.join(DOSSIER_DONNEES, "winequalityred.csv"))
+    donne = charger_donnees(os.path.join(DOSSIER_DONNEES, "winequalityred.csv"))  # ############ corrigé : mauvais nom de fichier (avant "wine4t3qualityred.csv" puis "winequalityred.csv.csv")
     print(type(donne))
     print(aucun_string_vide(donne))
     print(donne.dtypes)
