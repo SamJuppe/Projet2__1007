@@ -28,8 +28,6 @@ ROUGE_ERREUR = "#C0392B"
 AVERTISSEMENT_FOND = "#FFF4DE"
 AVERTISSEMENT_TEXTE = "#7A5300"
 POLICE = "Segoe UI"
-
-# Nom affiché et unité de chaque colonne du jeu de données (affichage seulement).
 LIBELLES = {
     "volatile acidity": ("Acidité volatile", "g/L"),
     "citric acid": ("Acide citrique", "g/L"),
@@ -76,7 +74,8 @@ class ChampSaisie:
                                 justify="left", wraplength=260)
         self._erreur.pack(fill="x")
 
-    @staticmethod
+    @staticmethod #pas sself
+
     def _indice(infos: dict, unite: str) -> str:
         """Construit le petit texte d'aide affiché à droite du nom (intervalle permis ou choix)."""
         if infos["type"] == "numerique":
@@ -132,7 +131,6 @@ class Application:
         self._dessiner_graphique(None)
         self._rafraichir_historique()
 
-    # ---------- Construction de la fenêtre ----------
     def _configurer_fenetre(self) -> None:
         """Titre, taille et couleur de fond de la fenêtre."""
         self._fenetre.title("Qualité du vin rouge – INF1007")
@@ -201,7 +199,7 @@ class Application:
 
         boutons = tk.Frame(carte, bg=CARTE, padx=8)
         boutons.pack(fill="x", pady=(10, 0))
-        self._bouton(boutons, "Prédire", self._predire, principal=True).pack(fill="x", ipady=4)
+        self._bouton(boutons, "Predire", self._predire, principal=True).pack(fill="x", ipady=4)
         secondaires = tk.Frame(boutons, bg=CARTE)
         secondaires.pack(fill="x", pady=(8, 0))
         self._bouton(secondaires, "Remplir un exemple", self._remplir_exemple).pack(side="left", expand=True, fill="x", padx=(0, 4))
@@ -249,17 +247,17 @@ class Application:
         self._label_compte = tk.Label(carte, text="", font=(POLICE, 9), fg=GRIS, bg=CARTE, anchor="w")
         self._label_compte.pack(fill="x", pady=(0, 8))
 
-        self._colonnes_historique = ["note", "appreciation"] + [v.get_nom() for v in self._variables]
+        self._colonnes_historique = ["numero", "note", "appreciation"] + [v.get_nom() for v in self._variables]
         cadre_tableau = tk.Frame(carte, bg=CARTE)
         cadre_tableau.pack(fill="both", expand=True)
         self._tableau = ttk.Treeview(cadre_tableau, columns=self._colonnes_historique, show="headings")
-        titres = {"note": "Note", "appreciation": "Appréciation",
+        titres = {"numero": "N°", "note": "Note", "appreciation": "Appréciation",
                   "volatile acidity": "Acidité vol.", "citric acid": "Ac. citrique",
                   "total sulfur dioxide": "SO₂ total", "density": "Densité",
                   "sulphates": "Sulfates", "alcohol": "Alcool", "sucre": "Sucre"}
         for colonne in self._colonnes_historique:
             titre = titres.get(colonne, colonne)
-            largeur = {"note": 60, "appreciation": 130}.get(colonne, 95)
+            largeur = {"numero": 50, "note": 60, "appreciation": 130}.get(colonne, 95)
             self._tableau.heading(colonne, text=titre)
             self._tableau.column(colonne, width=largeur, minwidth=60, anchor="center")
         self._tableau.tag_configure("pair", background="#FBF6F8")
@@ -343,7 +341,6 @@ class Application:
         axes.grid(axis="y", color="#F0E8EB")
         axes.set_axisbelow(True)
         axes.legend(frameon=False, fontsize=9, loc="upper left")
-        self._figure.tight_layout()
         self._canvas.draw()
 
     def _rafraichir_historique(self) -> None:
@@ -363,4 +360,4 @@ class Application:
                     valeurs.append(ligne.get(colonne, ""))
             self._tableau.insert("", tk.END, values=valeurs, tags=("pair",) if numero % 2 else ())
         pluriel = "s" if len(lignes) > 1 else ""
-        self._label_compte.config(text=f"{len(lignes)} prédiction{pluriel} enregistrée{pluriel} · la meilleure note en haut")
+        self._label_compte.config(text=f"{len(lignes)} prédiction{pluriel} enregistrée{pluriel} · la plus récente en haut")

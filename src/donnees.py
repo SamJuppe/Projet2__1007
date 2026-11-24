@@ -2,7 +2,7 @@
 import os
 import pandas as pd
 from abc import ABC,abstractmethod
-from exceptions import *
+from exceptions import FichierIntrouvableError,StringVide,Pasunnombre,depasse_limite,pas_dedans,FichierIntrouvableError
 import json as json
 # Dossier racine du projet : on part de ce fichier (src/donnees.py) et on remonte de 2 crans.
 DOSSIER_PROJET = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,7 +37,7 @@ def categoriser_sucre(donnees: pd.DataFrame) -> pd.DataFrame:
     donnees["sucre"] = pd.cut(donnees["residual sugar"], bins=bornes, labels=["sec", "sucré"], include_lowest=True)
     donnees = donnees.drop(columns=["residual sugar"])
     return donnees
-def charger_metadonnees(chemin: str) -> dict:#a relire et comprendre 
+def charger_metadonnees(chemin: str) -> dict:
     """cela va charger le fichier metadonne (.json)
     il va donc recevoir un string qui est le chemin vers le fichier
     et il va retourner un dictionnaire qui est dans le fichier json 
@@ -51,8 +51,6 @@ def charger_metadonnees(chemin: str) -> dict:#a relire et comprendre
 class Variable(ABC):
     def __init__(self,nom : str) -> None :
         self._nom = nom
-    # ############ get_choix a été retiré d'ici et déplacé dans VariableCategorielle (seule classe qui a self._choix)
-
     @abstractmethod
     def valider(self, saisie :str ) -> str|float:
         """Ce que va faire cette fonction grace au decorateur @abstractmethod tout les enfants tirer de cette
@@ -106,17 +104,16 @@ class VariableCategorielle(Variable):
             raise pas_dedans(f"Votre saisie : {saisie} n'est pas dans la liste : {self._choix}")
         return saisie.lower().strip()  
     def get_choix(self) -> list[str]:  
-        """Renvoie la liste des choix possibles de la variable catégorielle.
-
-        Reçoit : rien.
-        Renvoie : la liste des choix (list[str]), ex. ["sec", "sucré"].
-        Échoue : jamais, self._choix est toujours défini dans le constructeur.
+        """Renvoie la liste des choix possibles de la variable categorielle.
+        elle ne va rien recevoir
+        Renvoie : la liste des choix (list[str])
+        echoue : jamais, self._choix est toujours défini dans le constructeur.
         """
         return self._choix 
     def __str__(self) -> str:
         """Renvoie une description lisible de la variable, utilisée par print()."""
         return f"{self._nom} : un de {', '.join(self._choix)}"           
-def creer_variables(metadonnees: dict) -> list[Variable]: #a relire et comprendre 
+def creer_variables(metadonnees: dict) -> list[Variable]:
     """Crée la liste des variables d'entrée à partir des méta données du modèle.
 
     Reçoit : metadonnees (dict), le dictionnaire lu dans metadonnees.json.

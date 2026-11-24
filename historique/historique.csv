@@ -1,3 +1,6 @@
-volatile acidity,citric acid,total sulfur dioxide,density,sulphates,alcohol,sucre,note
-0.52,0.26,38.0,0.9968,0.62,10.2,sec,5.57
-1.0,0.26,38.0,0.9968,0.62,10.2,sec,5.01
+numero,volatile acidity,citric acid,total sulfur dioxide,density,sulphates,alcohol,sucre,note
+1,0.52,0.26,38.0,0.9968,0.62,10.2,sec,5.57
+2,0.52,0.26,38.0,0.9968,2.0,10.2,sec,6.46
+3,0.52,0.26,38.0,0.9968,0.62,10.2,sec,5.57
+4,0.52,0.26,38.0,0.9968,0.62,10.2,sec,5.57
+5,0.35,0.27,100.0,0.9925,0.5,13.0,sec,6.35

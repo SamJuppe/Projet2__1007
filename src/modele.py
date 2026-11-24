@@ -23,7 +23,7 @@ def separer_donnees(X : pd.DataFrame, y: pd.Series, taille_test: float=0.2, grai
 
 def rmse(y_reel : pd.Series, y_predit : np.ndarray) -> float:
     """Calcule la RMSE (erreur moyenne) avec NumPy.
-    le y_reel va eter le resultat reel de notre base de donner alors que np.ndarray va etre la moyenne qu'on va avoir avec nos test et cela va 
+    le y_reel va etre le resultat reel de notre base de donner alors que y_predit, les notes prédites (ou un seul nombre, ex. la moyenne, pour la référence). et cela va 
     renvoyer la marge d'erreur"""
     return float(np.sqrt(np.mean((y_reel - y_predit) ** 2)))
 
@@ -35,11 +35,11 @@ def enregistrer_jo(modele : LinearRegression, chemin : str)-> None:
     jo.dump(modele, chemin)
 
 
-def construire_metadonnees(X: pd.DataFrame, erreur: float) -> dict:
+def construire_metadonnees(X: pd.DataFrame, m_erreur: float) -> dict:
     """Construit le dictionnaire de métadonnées du modèle.
 
     Reçoit : X (pd.DataFrame), les colonnes d'entrée (sans la cible) ;
-             erreur (float), la RMSE obtenue sur l'ensemble de test.
+             m_erreur (float), la RMSE obtenue sur l'ensemble de test.
     renvoie un dict avec la RMSE et, pour chaque colonne, son min et son max.
     Et l'erreur c'est AttributeError si X n'est pas un DataFrame.
     """
@@ -47,7 +47,7 @@ def construire_metadonnees(X: pd.DataFrame, erreur: float) -> dict:
     maximums = X.max()
     colonnes = {}
     for colonne in X.columns:
-        if pd.api.types.is_numeric_dtype(X[colonne]): #a comprendre
+        if pd.api.types.is_numeric_dtype(X[colonne]): #regarde quel type c'est
             colonnes[colonne] = {
             "type": "numerique",
             "min": float(minimums[colonne]),
@@ -57,7 +57,7 @@ def construire_metadonnees(X: pd.DataFrame, erreur: float) -> dict:
             colonnes[colonne] = {
             "type": "categorielle",
             "choix": list(X[colonne].unique())}
-    return {"rmse": erreur, "colonnes": colonnes}
+    return {"rmse": m_erreur, "colonnes": colonnes}
 
 
 def enregistrer_metadonnees(metadonnees: dict, chemin: str) -> None:
@@ -94,8 +94,8 @@ def predire(modele: LinearRegression, saisies: dict) -> float:#a relire et compr
     Échoue : ValueError si une colonne attendue par le modèle est manquante.
     """
     ligne = pd.DataFrame([saisies])
-    ligne = pd.get_dummies(ligne)
-    ligne = ligne.reindex(columns=modele.feature_names_in_, fill_value=0)
+    ligne = pd.get_dummies(ligne) #1 ou 0 (categorielle)s
+    ligne = ligne.reindex(columns=modele.feature_names_in_, fill_value=0)    
     return float(modele.predict(ligne)[0])
 
 def interpreter_note(note: float) -> str:
@@ -125,12 +125,14 @@ if __name__ == "__main__":
     modele.fit(X_train, y_train)    
     y_predit = modele.predict(X_test)          
 
-    #CALCUL RMSEc
+    #CALCUL RMSE
     print("RMSE modèle :", rmse(y_test, y_predit))
+    print(y_predit)
+    print(y_test)
     print("RMSE référence :", rmse(y_test, y_train.mean())) 
 
     enregistrer_jo(modele,os.path.join(DOSSIER_PROJET, "modeles","modele.joblib"))
 
     metadonnees = construire_metadonnees(X_avant, rmse(y_test, y_predit))
     enregistrer_metadonnees(metadonnees, os.path.join(DOSSIER_PROJET, "modeles", "metadonnees.json"))
-
+    
