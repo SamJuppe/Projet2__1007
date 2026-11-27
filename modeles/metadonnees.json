@@ -1,5 +1,5 @@
 {
-    "rmse": 0.6334633394789655,
+    "rmse": 0.6334633394789654,
     "colonnes": {
         "volatile acidity": {
             "type": "numerique",
