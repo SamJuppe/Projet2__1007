@@ -1,0 +1,17 @@
+# Journal d'utilisation de l'IA
+ON A UTILISE L'IA POUR RENDRE CE FIHCIER PLUS ESTHETIQUE: on lui a donne toutes les informations et il a formate le tableau et mis notre paragraphes au prore sans erreurs 
+meme chose pour DECISIONS.md et le README.md
+## Comment nous avons utilisé l’IA
+
+Au début du projet, nous avons utilisé l’IA pour créer la checklist plus rapidement (dans le fichier CHECKLIST.md). Nous avons ensuite comparé la checklist à l’énoncé, pour vérifier qu’elle reprenait bien les exigences du projet.
+Pour l'interface, on a fait un croquis sur papier et on l'a envoye a claude pour faire le design qu'on voulait bloque par bloque a son aide.
+Une fois le projet terminé, nous avons donné à l’IA tous les fichiers du projet et l’énoncé pour lui demander de tout relire. Nous lui avons demandé de repérer les petites erreurs qui auraient pu nous échapper, d’indiquer où elles se trouvaient et de préciser la correction proposée et l’endroit où l’appliquer. Nous avons examiné les propositions nous-mêmes pour décider lesquelles approuver.
+
+| Outil | Demande | Réponse reçue | Vérification faite | Décision |
+| --- | --- | --- | --- | --- |
+| Codex | Retrouver la checklist dans le projet | Deux dossiers contenaient les mêmes cases | Comparaison du texte ligne par ligne et des branches Git | Sandrine a choisi la copie directement sous INF1007. |
+| Codex | Vérifier l'entraînement | Le point d'entrée et le calcul RMSE comportaient des erreurs | Exécution de modele.py, puis comparaison avec scikit-learn | Corriger les erreurs avant de régénérer le modèle. |
+| Codex | Repérer les valeurs extrêmes | Appliquer le seuil de 1,5 écart interquartile | Comptage par colonne sur les 1 599 lignes | Conserver les observations, faute d'élément indiquant une erreur de mesure. |
+| Codex | Expliquer le résultat affiché | L'ancienne fenêtre présentait la RMSE comme une plage probable | Vérification de la définition de la RMSE et du code d'affichage | Remplacer la plage par la RMSE globale observée sur le test. |
+| COWORK | Vérifier les entrées et les fichiers | Ajouter des tests sur les valeurs limites, les erreurs et l'historique | Exécution de pytest sur les fichiers du projet | Garder des tests paramétrés pour les différentes saisies invalides. |
+| COWORK | Confirmer la licence de la source | UCI indique CC BY 4.0 et le README initial indiquait DbCL v1.0 | Consultation de la fiche UCI et de la licence renvoyée par Kaggle | Citer les deux sources et leurs licences. |

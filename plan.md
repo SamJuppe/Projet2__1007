@@ -138,10 +138,12 @@
 - [ ] Test final : cloner dans un dossier neuf, installer, lancer l'appli et les tests
 
 ## 6. Présentation (10 min)
-- [ ] Répartir la parole à parts égales
-- [ ] Démo en direct : cas normal, saisie invalide, graphique
-- [ ] Schéma simple des classes et des modules
-- [ ] Plan B (captures d'écran ou vidéo)
-- [ ] Maximum 4 diapositives (facultatif)
-- [ ] Répéter en chronométrant (5 min)
-- [ ] Chacun peut expliquer chaque ligne du code
+- [x] Répartir la parole à parts égales
+- [x] Démo en direct : cas normal, saisie invalide, graphique
+- [x] Schéma simple des classes et des modules
+- [x] Plan B (captures d'écran ou vidéo)
+- [x] Maximum 4 diapositives (facultatif)
+- [x] Répéter en chronométrant (5 min)
+- [x] Chacun peut expliquer chaque ligne du code
+
+#CHECK LIST REMPLIE
